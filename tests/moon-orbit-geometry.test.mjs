@@ -11,7 +11,7 @@ assert.match(source, /moonOrbit\.add\(moonRing\);/);
 assert.match(source, /moonOrbit\.add\(moon\);/);
 assert.match(source, /moonOrbit\.position\.copy\(earthPosNow\);/);
 assert.match(source, /moonRing\.material\.depthTest = true;/);
-assert.match(source, /var MOON_R\s+= 10;/);
+assert.match(source, /var MOON_R\s+= 7;/);
 assert.match(source, /var MOON_R_TRUE\s+= 69\.4;/);
 assert.match(source, /var ORBIT_R_TRUE\s+=/);
 assert.match(source, /var SUN_RADIUS_TRUE\s+=/);
