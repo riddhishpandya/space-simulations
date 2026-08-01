@@ -497,21 +497,27 @@ while (textNode = textWalker.nextNode()) {
 
 function updateMoonPhaseBox(){
   var phase = moonPhaseForDate(new Date());
-  var fraction = (1 - Math.cos((phase.age / 29.530588853) * Math.PI * 2)) / 2;
-  var waxing = phase.age < 14.7653;
-  var shadowLeft = waxing ? (-4 - fraction * 48) : (20 + ((fraction - 0.5) / 0.5) * 64);
-  moonPhaseShadow.style.left = shadowLeft.toFixed(1) + 'px';
+  moonPhaseVisual.innerHTML = moonPhaseSvg(phase.age);
   moonPhaseBox.innerHTML = '';
   moonPhaseBox.appendChild(moonPhaseVisual);
   var phaseText = document.createElement('div');
   phaseText.innerHTML = '<strong>Moon phase</strong><br>' + phase.name + '<br><span style="color:#94a3b8">New York City, NY · Day ' + phase.age.toFixed(1) + ' of 29.5</span>';
   moonPhaseBox.appendChild(phaseText);
 }
+function moonPhaseSvg(age){
+  var cycle = 29.530588853;
+  var radius = 28;
+  var waxing = age < cycle / 2;
+  var progress = waxing ? age / cycle : 1 - age / cycle;
+  var cosine = Math.cos(progress * Math.PI * 2);
+  var ellipseRadius = Math.max(0.01, Math.abs(cosine) * radius).toFixed(2);
+  var innerSweep = cosine >= 0 ? (waxing ? 1 : 0) : (waxing ? 0 : 1);
+  var outerSweep = waxing ? 1 : 0;
+  var path = 'M 32 4 A 28 28 0 0 ' + outerSweep + ' 32 60 A ' + ellipseRadius + ' 28 0 0 ' + innerSweep + ' 32 4 Z';
+  return '<svg viewBox="0 0 64 64" width="48" height="48" role="img" aria-label="Moon phase visual"><defs><radialGradient id="phaseMoonLight" cx="38%" cy="32%"><stop offset="0" stop-color="#f8fafc"/><stop offset="0.55" stop-color="#cbd5e1"/><stop offset="1" stop-color="#64748b"/></radialGradient></defs><circle cx="32" cy="32" r="28" fill="#070c16"/><path d="' + path + '" fill="url(#phaseMoonLight)"/><circle cx="32" cy="32" r="28" fill="none" stroke="#94a3b8" stroke-opacity=".35"/></svg>';
+}
 var moonPhaseVisual = document.createElement('div');
-moonPhaseVisual.style.cssText = 'position:relative;flex:0 0 48px;width:48px;height:48px;margin-right:10px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 38% 34%,#f8fafc 0 8%,#cbd5e1 42%,#64748b 100%);box-shadow:0 0 14px rgba(203,213,225,.3);';
-var moonPhaseShadow = document.createElement('span');
-moonPhaseShadow.style.cssText = 'position:absolute;top:-4px;left:20px;width:56px;height:56px;border-radius:50%;background:#070c16;';
-moonPhaseVisual.appendChild(moonPhaseShadow);
+moonPhaseVisual.style.cssText = 'position:relative;flex:0 0 48px;width:48px;height:48px;margin-right:10px;border-radius:50%;overflow:hidden;box-shadow:0 0 14px rgba(203,213,225,.3);';
 moonPhaseBox.style.display = 'flex';
 moonPhaseBox.style.alignItems = 'center';
 updateMoonPhaseBox();

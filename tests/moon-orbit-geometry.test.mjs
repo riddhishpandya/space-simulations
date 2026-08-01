@@ -22,6 +22,8 @@ assert.match(source, /function setMoonScale\(trueScale\)/);
 assert.match(source, /scaleBtn/);
 assert.match(source, /New York City, NY/);
 assert.match(source, /Moon phase/);
+assert.match(source, /function moonPhaseSvg\(age\)/);
+assert.match(source, /role="img" aria-label="Moon phase visual"/);
 assert.match(source, /new THREE\.Spherical\(22,/);
 
 console.log('Moon orbit geometry contract passed');
