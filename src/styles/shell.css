@@ -113,18 +113,26 @@ h1 {
 
 @media (max-width: 640px) {
   .workspace {
-    padding: calc(10px + env(safe-area-inset-top))
+    padding: calc(6px + env(safe-area-inset-top))
       calc(14px + env(safe-area-inset-right)) 0
       calc(14px + env(safe-area-inset-left));
   }
 
   .workspace-header {
-    padding-bottom: 8px;
+    padding-bottom: 4px;
+  }
+
+  .eyebrow {
+    margin-bottom: 2px;
+    font-size: 0.58rem;
+  }
+
+  h1 {
+    font-size: 1.35rem;
   }
 
   .workspace-description {
-    margin-top: 5px;
-    font-size: 0.8rem;
+    display: none;
   }
 
   .simulation-panels {

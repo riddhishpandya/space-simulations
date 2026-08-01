@@ -43,8 +43,8 @@
 
 @media (max-width: 640px) {
   .simulation-tab {
-    min-height: 44px;
-    padding: 0 14px;
-    font-size: 0.8rem;
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 0.74rem;
   }
 }

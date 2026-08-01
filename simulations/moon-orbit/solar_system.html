@@ -493,7 +493,7 @@ moonPhaseBox.setAttribute('aria-live', 'polite');
 moonPhaseBox.style.cssText = 'position:fixed;left:auto;right:12px;top:164px;bottom:auto;z-index:20;width:196px;padding:10px 12px;border:1px solid #263247;border-radius:10px;background:rgba(7,12,22,.92);color:#dbeafe;font:12px system-ui;box-shadow:0 8px 24px rgba(0,0,0,.25);';
 document.body.appendChild(moonPhaseBox);
 var responsiveUiStyle = document.createElement('style');
-responsiveUiStyle.textContent = '@media (max-width: 600px) { #scaleBtn { top: auto !important; right: 8px !important; bottom: 86px !important; font-size: 10px !important; } #moonPhaseBox { left: 8px !important; right: auto !important; top: 116px !important; width: 164px !important; padding: 8px 10px !important; } }';
+responsiveUiStyle.textContent = '@media (max-width: 600px) { #info { top: 8px !important; left: 8px !important; right: 156px !important; max-width: none !important; padding: 9px 10px !important; font-size: 10px !important; line-height: 1.35 !important; } #info h1 { font-size: 12px !important; margin-bottom: 4px !important; } #info .row { gap: 6px !important; margin: 2px 0 !important; } #info .row:nth-of-type(2), #info .row:nth-of-type(3), #info .row:nth-of-type(6), #info .row:nth-of-type(7) { display: none !important; } #clock { top: 8px !important; right: 8px !important; width: 140px !important; padding: 8px 9px !important; font-size: 10px !important; } #clock b { font-size: 11px !important; } #moonPhaseBox { left: 8px !important; right: 8px !important; top: 142px !important; width: auto !important; padding: 7px 9px !important; font-size: 10px !important; } #moonPhaseBox svg { width: 38px !important; height: 38px !important; } #moonPhaseVisual { flex-basis: 38px !important; width: 38px !important; height: 38px !important; } #legend, #controls { display: none !important; } #timepanel { bottom: 8px !important; left: 8px !important; transform: none !important; width: calc(100% - 16px) !important; min-width: 0 !important; max-width: none !important; padding: 9px 10px !important; gap: 7px !important; } #scaleBtn { top: 245px !important; right: 8px !important; bottom: auto !important; font-size: 10px !important; padding: 7px 8px !important; } }';
 document.head.appendChild(responsiveUiStyle);
 
 var textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -524,6 +524,7 @@ function moonPhaseSvg(age){
   return '<svg viewBox="0 0 64 64" width="48" height="48" role="img" aria-label="Moon phase visual"><defs><radialGradient id="phaseMoonLight" cx="38%" cy="32%"><stop offset="0" stop-color="#f8fafc"/><stop offset="0.55" stop-color="#cbd5e1"/><stop offset="1" stop-color="#64748b"/></radialGradient></defs><circle cx="32" cy="32" r="28" fill="#070c16"/><path d="' + path + '" fill="url(#phaseMoonLight)"/><circle cx="32" cy="32" r="28" fill="none" stroke="#94a3b8" stroke-opacity=".35"/></svg>';
 }
 var moonPhaseVisual = document.createElement('div');
+moonPhaseVisual.id = 'moonPhaseVisual';
 moonPhaseVisual.style.cssText = 'position:relative;flex:0 0 48px;width:48px;height:48px;margin-right:10px;border-radius:50%;overflow:hidden;box-shadow:0 0 14px rgba(203,213,225,.3);';
 moonPhaseBox.style.display = 'flex';
 moonPhaseBox.style.alignItems = 'center';
