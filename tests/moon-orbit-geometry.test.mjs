@@ -12,6 +12,11 @@ assert.match(source, /moonOrbit\.add\(moon\);/);
 assert.match(source, /moonOrbit\.position\.copy\(earthPosNow\);/);
 assert.match(source, /moonRing\.material\.depthTest = true;/);
 assert.match(source, /var MOON_R\s+= 18;/);
+assert.match(source, /var MOON_R_TRUE\s+= 69\.4;/);
+assert.match(source, /function setMoonScale\(trueScale\)/);
+assert.match(source, /scaleBtn/);
+assert.match(source, /New York City, NY/);
+assert.match(source, /Moon phase/);
 assert.match(source, /new THREE\.Spherical\(22,/);
 
 console.log('Moon orbit geometry contract passed');

@@ -43,7 +43,7 @@
   <div class="row"><span>Earth–Moon distance</span><b>399,400 km</b></div>
   <div class="row"><span>Moon age</span><b>~15 days</b></div>
   <div class="row"><span>Moon orbit tilt</span><b>5.1° from ecliptic</b></div>
-  <div class="row" style="margin-top:8px;border-top:1px solid rgba(255,255,255,0.08);padding-top:8px;"><span>Your marker</span><b>Toms River, NJ</b></div>
+  <div class="row" style="margin-top:8px;border-top:1px solid rgba(255,255,255,0.08);padding-top:8px;"><span>Your marker</span><b>New York City, NY</b></div>
 </div>
 
 <div class="panel" id="clock">
@@ -55,7 +55,7 @@
   <span><i class="circle" style="background:#E69F00;"></i>Sun</span>
   <span><i class="circle" style="background:#0072B2;"></i>Earth</span>
   <span><i class="circle" style="background:#BBBBBB;"></i>Moon</span>
-  <span><i class="pin" style="background:#CC79A7;"></i>New Jersey</span>
+  <span><i class="pin" style="background:#CC79A7;"></i>New York City</span>
   <span style="opacity:.85;">— rotation axis (23.44°)</span>
 </div>
 
@@ -148,7 +148,10 @@ function init(){
   // Earth is sized for visibility (not literally 1:109 to the Sun — too small to read).
   // Moon keeps the real size ratio to Earth (0.273x), so that relationship stays accurate.
   // Moon's orbital distance is compressed for visibility too, same artistic treatment as the Sun-Earth distance.
-  var EARTH_RADIUS = 1.15;
+var EARTH_RADIUS = 1.15;
+var MOON_R_READABLE = 18;
+var MOON_R_TRUE = 69.4; // physical Earth-to-Moon distance relative to Earth radius
+var moonTrueScale = false;
   var MOON_RADIUS  = EARTH_RADIUS * (1737.4/6371);  // ≈ 0.314, real ratio to Earth
   var MOON_R       = 18;    // moderately compressed for visibility; closer to the real Earth-Moon proportion
 
@@ -327,7 +330,16 @@ function init(){
 
   // ---------- Camera ----------
   var camTarget = earthPos.clone();
-  var spherical = new THREE.Spherical(22, Math.PI/2.4, 0.6);
+var spherical = new THREE.Spherical(22, Math.PI/2.4, 0.6);
+var scaleBtn = document.createElement('button');
+scaleBtn.id = 'scaleBtn';
+scaleBtn.type = 'button';
+scaleBtn.textContent = 'TRUE SCALE';
+scaleBtn.title = 'Toggle between readable and physically relative Earth–Moon scale';
+scaleBtn.setAttribute('aria-pressed', 'false');
+scaleBtn.style.cssText = 'position:fixed;top:auto;right:12px;bottom:104px;z-index:20;padding:8px 10px;border:1px solid #334155;border-radius:8px;background:rgba(11,18,32,.94);color:#dbeafe;font:600 11px system-ui;cursor:pointer;';
+scaleBtn.addEventListener('click', function(){ setMoonScale(!moonTrueScale); });
+document.body.appendChild(scaleBtn);
   function updateCamera(){
     var offset = new THREE.Vector3().setFromSpherical(spherical);
     camera.position.copy(camTarget).add(offset);
@@ -397,10 +409,83 @@ function init(){
     var d = ((deg + 180) % 360 + 360) % 360 - 180;
     return d;
   }
-  function moonDirection(angle){
-    var fx = Math.cos(angle), fz = Math.sin(angle);
-    return new THREE.Vector3(fx, 0, fz);
+function moonDirection(angle){
+  var fx = Math.cos(angle), fz = Math.sin(angle);
+  return new THREE.Vector3(fx, 0, fz);
+}
+
+function setMoonScale(trueScale){
+  moonTrueScale = trueScale;
+  MOON_R = trueScale ? MOON_R_TRUE : MOON_R_READABLE;
+  if (typeof moonRing !== 'undefined' && moonRing) setRingRadius(moonRing, MOON_R, 64);
+  if (typeof eclipticRef !== 'undefined' && eclipticRef) {
+    setRingRadius(eclipticRef, MOON_R, 64);
+    eclipticRef.material.dashSize = MOON_R * 0.048;
+    eclipticRef.material.gapSize = MOON_R * 0.035;
   }
+  if (typeof scaleBtn !== 'undefined' && scaleBtn) {
+    scaleBtn.textContent = trueScale ? 'READABLE SCALE' : 'TRUE SCALE';
+    scaleBtn.setAttribute('aria-pressed', String(trueScale));
+  }
+  spherical.radius = trueScale ? 90 : 22;
+  updateCamera();
+}
+
+function setRingRadius(line, radius, segments){
+  var points = [];
+  for (var i = 0; i <= segments; i++) {
+    var a = (i / segments) * Math.PI * 2;
+    points.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius));
+  }
+  line.geometry.setFromPoints(points);
+  if (line.computeLineDistances) line.computeLineDistances();
+}
+
+function moonPhaseForDate(date){
+  var knownNewMoon = Date.UTC(2000, 0, 6, 18, 14);
+  var synodicMonth = 29.530588853;
+  var age = ((date.getTime() - knownNewMoon) / 86400000) % synodicMonth;
+  if (age < 0) age += synodicMonth;
+  var names = ['New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous', 'Full Moon', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent'];
+  var index = Math.round(age / (synodicMonth / 8)) % 8;
+  return { name: names[index], age: age };
+}
+
+var moonPhaseBox = document.createElement('aside');
+moonPhaseBox.id = 'moonPhaseBox';
+moonPhaseBox.setAttribute('aria-live', 'polite');
+moonPhaseBox.style.cssText = 'position:fixed;left:auto;right:12px;top:164px;bottom:auto;z-index:20;width:196px;padding:10px 12px;border:1px solid #263247;border-radius:10px;background:rgba(7,12,22,.92);color:#dbeafe;font:12px system-ui;box-shadow:0 8px 24px rgba(0,0,0,.25);';
+document.body.appendChild(moonPhaseBox);
+var responsiveUiStyle = document.createElement('style');
+responsiveUiStyle.textContent = '@media (max-width: 600px) { #scaleBtn { top: auto !important; right: 8px !important; bottom: 86px !important; font-size: 10px !important; } #moonPhaseBox { left: 8px !important; right: auto !important; top: 116px !important; width: 164px !important; padding: 8px 10px !important; } }';
+document.head.appendChild(responsiveUiStyle);
+
+var textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+var textNode;
+while (textNode = textWalker.nextNode()) {
+  textNode.nodeValue = textNode.nodeValue.replace(/Toms River, NJ/g, 'New York City, NY');
+}
+
+function updateMoonPhaseBox(){
+  var phase = moonPhaseForDate(new Date());
+  var fraction = (1 - Math.cos((phase.age / 29.530588853) * Math.PI * 2)) / 2;
+  var waxing = phase.age < 14.7653;
+  var shadowLeft = waxing ? (-4 - fraction * 48) : (20 + ((fraction - 0.5) / 0.5) * 64);
+  moonPhaseShadow.style.left = shadowLeft.toFixed(1) + 'px';
+  moonPhaseBox.innerHTML = '';
+  moonPhaseBox.appendChild(moonPhaseVisual);
+  var phaseText = document.createElement('div');
+  phaseText.innerHTML = '<strong>Moon phase</strong><br>' + phase.name + '<br><span style="color:#94a3b8">New York City, NY · Day ' + phase.age.toFixed(1) + ' of 29.5</span>';
+  moonPhaseBox.appendChild(phaseText);
+}
+var moonPhaseVisual = document.createElement('div');
+moonPhaseVisual.style.cssText = 'position:relative;flex:0 0 48px;width:48px;height:48px;margin-right:10px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 38% 34%,#f8fafc 0 8%,#cbd5e1 42%,#64748b 100%);box-shadow:0 0 14px rgba(203,213,225,.3);';
+var moonPhaseShadow = document.createElement('span');
+moonPhaseShadow.style.cssText = 'position:absolute;top:-4px;left:20px;width:56px;height:56px;border-radius:50%;background:#070c16;';
+moonPhaseVisual.appendChild(moonPhaseShadow);
+moonPhaseBox.style.display = 'flex';
+moonPhaseBox.style.alignItems = 'center';
+updateMoonPhaseBox();
   function setLive(on){
     liveMode = on;
     liveBtn.classList.toggle('paused', !on);
