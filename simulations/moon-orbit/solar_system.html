@@ -143,17 +143,21 @@ function init(){
   var SYNODIC_RATE_DEG_DAY = MOON_RATE_DEG_DAY - EARTH_RATE_DEG_DAY; // ~12.19 deg/day, 29.53-day cycle
   var AU_A_KM = 149598023, AU_E = 0.0167086; // Earth orbit semi-major axis & eccentricity, for distance readout
 
-  var ORBIT_R = 46;      // scaled Earth orbit radius (kept as-is, compressed)
-  var SUN_RADIUS   = 3.4;  // kept as-is
+  var ORBIT_R_READABLE = 46;
+  var SUN_RADIUS_READABLE = 3.4;
   // Earth is sized for visibility (not literally 1:109 to the Sun — too small to read).
   // Moon keeps the real size ratio to Earth (0.273x), so that relationship stays accurate.
   // Moon's orbital distance is compressed for visibility too, same artistic treatment as the Sun-Earth distance.
 var EARTH_RADIUS = 1.15;
-var MOON_R_READABLE = 18;
+var ORBIT_R_TRUE = EARTH_RADIUS * (149597870.7 / 6371); // 1 AU in Earth-radius units
+var SUN_RADIUS_TRUE = EARTH_RADIUS * (695700 / 6371); // real Sun radius in Earth-radius units
+var ORBIT_R = ORBIT_R_READABLE;
+var SUN_RADIUS = SUN_RADIUS_READABLE;
+var MOON_R_READABLE = 14;
 var MOON_R_TRUE = 69.4; // physical Earth-to-Moon distance relative to Earth radius
 var moonTrueScale = false;
   var MOON_RADIUS  = EARTH_RADIUS * (1737.4/6371);  // ≈ 0.314, real ratio to Earth
-  var MOON_R       = 18;    // moderately compressed for visibility; closer to the real Earth-Moon proportion
+  var MOON_R       = 14;    // readable mode keeps the Moon closer without changing its true size ratio
 
   var earthPos = new THREE.Vector3(
     ORBIT_R*Math.cos(earthAngle),
@@ -175,7 +179,8 @@ var moonTrueScale = false;
 
   var glowGeo = new THREE.SphereGeometry(SUN_RADIUS*1.35, 32, 32);
   var glowMat = new THREE.MeshBasicMaterial({color:0xE69F00, transparent:true, opacity:0.18});
-  scene.add(new THREE.Mesh(glowGeo, glowMat));
+  var glow = new THREE.Mesh(glowGeo, glowMat);
+  scene.add(glow);
 
   var sunLight = new THREE.PointLight(0xfff2d0, 2.4, 0, 0);
   scene.add(sunLight);
@@ -194,7 +199,8 @@ var moonTrueScale = false;
     if(tiltX) line.rotation.x = tiltX;
     return line;
   }
-  scene.add(ringPath(ORBIT_R, 128, 0x0072B2, 0.28));
+  var earthOrbitLine = ringPath(ORBIT_R, 128, 0x0072B2, 0.28);
+  scene.add(earthOrbitLine);
 
   // Flat reference ring showing the ecliptic plane at Earth's location (dashed, neutral)
   var eclipticRefGeo = new THREE.BufferGeometry();
@@ -331,6 +337,7 @@ var moonTrueScale = false;
   // ---------- Camera ----------
   var camTarget = earthPos.clone();
 var spherical = new THREE.Spherical(22, Math.PI/2.4, 0.6);
+var cameraMaxRadius = 140;
 var scaleBtn = document.createElement('button');
 scaleBtn.id = 'scaleBtn';
 scaleBtn.type = 'button';
@@ -362,7 +369,7 @@ document.body.appendChild(scaleBtn);
   });
   renderer.domElement.addEventListener('wheel', function(e){
     e.preventDefault();
-    spherical.radius = Math.min(Math.max(spherical.radius * (1 + e.deltaY*0.0012), 3), 140);
+    spherical.radius = Math.min(Math.max(spherical.radius * (1 + e.deltaY*0.0012), 3), cameraMaxRadius);
     updateCamera();
   }, {passive:false});
 
@@ -372,7 +379,7 @@ document.body.appendChild(scaleBtn);
     if(e.touches.length===2){
       var d = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
       if(lastDist!=null){
-        spherical.radius = Math.min(Math.max(spherical.radius * (1 - (d-lastDist)*0.006), 3), 140);
+        spherical.radius = Math.min(Math.max(spherical.radius * (1 - (d-lastDist)*0.006), 3), cameraMaxRadius);
         updateCamera();
       }
       lastDist = d;
@@ -416,7 +423,17 @@ function moonDirection(angle){
 
 function setMoonScale(trueScale){
   moonTrueScale = trueScale;
+  ORBIT_R = trueScale ? ORBIT_R_TRUE : ORBIT_R_READABLE;
+  SUN_RADIUS = trueScale ? SUN_RADIUS_TRUE : SUN_RADIUS_READABLE;
   MOON_R = trueScale ? MOON_R_TRUE : MOON_R_READABLE;
+  var sunScale = SUN_RADIUS / SUN_RADIUS_READABLE;
+  sun.scale.setScalar(sunScale);
+  glow.scale.setScalar(sunScale);
+  earthPos.set(ORBIT_R * Math.cos(earthAngle), 0, ORBIT_R * Math.sin(earthAngle));
+  if (typeof earthOrbitLine !== 'undefined' && earthOrbitLine) setRingRadius(earthOrbitLine, ORBIT_R, 128);
+  if (typeof earthGroup !== 'undefined' && earthGroup) earthGroup.position.copy(earthPos);
+  if (typeof moonOrbit !== 'undefined' && moonOrbit) moonOrbit.position.copy(earthPos);
+  if (typeof eclipticRef !== 'undefined' && eclipticRef) eclipticRef.position.copy(earthPos);
   if (typeof moonRing !== 'undefined' && moonRing) setRingRadius(moonRing, MOON_R, 64);
   if (typeof eclipticRef !== 'undefined' && eclipticRef) {
     setRingRadius(eclipticRef, MOON_R, 64);
@@ -427,7 +444,9 @@ function setMoonScale(trueScale){
     scaleBtn.textContent = trueScale ? 'READABLE SCALE' : 'TRUE SCALE';
     scaleBtn.setAttribute('aria-pressed', String(trueScale));
   }
+  cameraMaxRadius = trueScale ? 32000 : 140;
   spherical.radius = trueScale ? 90 : 22;
+  camTarget.copy(earthPos);
   updateCamera();
 }
 
