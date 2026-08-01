@@ -153,11 +153,11 @@ var ORBIT_R_TRUE = EARTH_RADIUS * (149597870.7 / 6371); // 1 AU in Earth-radius 
 var SUN_RADIUS_TRUE = EARTH_RADIUS * (695700 / 6371); // real Sun radius in Earth-radius units
 var ORBIT_R = ORBIT_R_READABLE;
 var SUN_RADIUS = SUN_RADIUS_READABLE;
-var MOON_R_READABLE = 14;
+var MOON_R_READABLE = 10;
 var MOON_R_TRUE = 69.4; // physical Earth-to-Moon distance relative to Earth radius
 var moonTrueScale = false;
   var MOON_RADIUS  = EARTH_RADIUS * (1737.4/6371);  // ≈ 0.314, real ratio to Earth
-  var MOON_R       = 14;    // readable mode keeps the Moon closer without changing its true size ratio
+  var MOON_R       = 10;    // readable mode keeps the Moon closer without changing its true size ratio
 
   var earthPos = new THREE.Vector3(
     ORBIT_R*Math.cos(earthAngle),
