@@ -1,0 +1,49 @@
+.simulation-tabs {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(86, 180, 233, 0.55) transparent;
+}
+
+.simulation-tab {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.simulation-tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+
+.simulation-tab[aria-selected="true"] {
+  border-color: var(--border);
+  border-bottom-color: var(--accent);
+  background: var(--surface-soft);
+  color: var(--text);
+}
+
+.simulation-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+@media (max-width: 640px) {
+  .simulation-tab {
+    padding: 0 14px;
+    font-size: 0.8rem;
+  }
+}

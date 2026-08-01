@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#05070d">
+    <title>Space Simulations</title>
+    <link rel="stylesheet" href="./src/styles/shell.css">
+    <link rel="stylesheet" href="./src/styles/tabs.css">
+  </head>
+  <body>
+    <main class="workspace" aria-labelledby="workspace-title">
+      <header class="workspace-header">
+        <p class="eyebrow">Interactive astronomy</p>
+        <h1 id="workspace-title">Space Simulations</h1>
+        <p class="workspace-description">Explore orbital motion and celestial systems.</p>
+      </header>
+
+      <div id="simulation-tabs" class="simulation-tabs" role="tablist" aria-label="Simulations"></div>
+      <section id="simulation-panels" class="simulation-panels" aria-live="polite"></section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
