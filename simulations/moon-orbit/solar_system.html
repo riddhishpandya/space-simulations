@@ -150,7 +150,7 @@ function init(){
   // Moon's orbital distance is compressed for visibility too, same artistic treatment as the Sun-Earth distance.
   var EARTH_RADIUS = 1.15;
   var MOON_RADIUS  = EARTH_RADIUS * (1737.4/6371);  // ≈ 0.314, real ratio to Earth
-  var MOON_R       = 6.2;   // compressed for visibility, like ORBIT_R is for the Sun
+  var MOON_R       = 18;    // moderately compressed for visibility; closer to the real Earth-Moon proportion
 
   var earthPos = new THREE.Vector3(
     ORBIT_R*Math.cos(earthAngle),
@@ -327,7 +327,7 @@ function init(){
 
   // ---------- Camera ----------
   var camTarget = earthPos.clone();
-  var spherical = new THREE.Spherical(16, Math.PI/2.4, 0.6);
+  var spherical = new THREE.Spherical(22, Math.PI/2.4, 0.6);
   function updateCamera(){
     var offset = new THREE.Vector3().setFromSpherical(spherical);
     camera.position.copy(camTarget).add(offset);

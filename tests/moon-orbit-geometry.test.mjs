@@ -11,5 +11,7 @@ assert.match(source, /moonOrbit\.add\(moonRing\);/);
 assert.match(source, /moonOrbit\.add\(moon\);/);
 assert.match(source, /moonOrbit\.position\.copy\(earthPosNow\);/);
 assert.match(source, /moonRing\.material\.depthTest = true;/);
+assert.match(source, /var MOON_R\s+= 18;/);
+assert.match(source, /new THREE\.Spherical\(22,/);
 
 console.log('Moon orbit geometry contract passed');
