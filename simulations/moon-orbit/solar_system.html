@@ -80,7 +80,7 @@ function init(){
   var W = wrap.clientWidth, H = wrap.clientHeight;
 
   var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 4000);
+  var camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 50000);
 
   var renderer = new THREE.WebGLRenderer({antialias:true});
   renderer.setSize(W,H);
@@ -445,7 +445,17 @@ function setMoonScale(trueScale){
     scaleBtn.setAttribute('aria-pressed', String(trueScale));
   }
   cameraMaxRadius = trueScale ? 32000 : 140;
-  spherical.radius = trueScale ? 90 : 22;
+  if (trueScale) {
+    // Start perpendicular to the Earth–Sun axis so the correctly distant Sun remains
+    // visible beside Earth instead of being hidden behind it.
+    spherical.radius = 30000;
+    spherical.phi = Math.PI / 2;
+    spherical.theta = earthAngle + Math.PI / 2;
+  } else {
+    spherical.radius = 22;
+    spherical.phi = Math.PI / 2.4;
+    spherical.theta = 0.6;
+  }
   camTarget.copy(earthPos);
   updateCamera();
 }
