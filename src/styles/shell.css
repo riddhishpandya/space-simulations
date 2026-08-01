@@ -40,7 +40,7 @@ iframe {
   height: 100vh;
   height: 100dvh;
   min-height: 0;
-  padding: 22px 24px 0;
+  padding: 14px 24px 0;
   background:
     radial-gradient(circle at 80% -20%, rgba(0, 114, 178, 0.18), transparent 42%),
     var(--page-bg);
@@ -48,11 +48,11 @@ iframe {
 
 .workspace-header {
   flex: 0 0 auto;
-  padding: 0 2px 16px;
+  padding: 0 2px 8px;
 }
 
 .eyebrow {
-  margin: 0 0 6px;
+  margin: 0 0 3px;
   color: var(--accent);
   font-size: 0.72rem;
   font-weight: 700;
@@ -62,16 +62,16 @@ iframe {
 
 h1 {
   margin: 0;
-  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
   line-height: 1.1;
   letter-spacing: -0.03em;
 }
 
 .workspace-description {
   max-width: 42rem;
-  margin: 7px 0 0;
+  margin: 4px 0 0;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 .simulation-panels {
@@ -113,13 +113,13 @@ h1 {
 
 @media (max-width: 640px) {
   .workspace {
-    padding: calc(14px + env(safe-area-inset-top))
+    padding: calc(10px + env(safe-area-inset-top))
       calc(14px + env(safe-area-inset-right)) 0
       calc(14px + env(safe-area-inset-left));
   }
 
   .workspace-header {
-    padding-bottom: 12px;
+    padding-bottom: 8px;
   }
 
   .workspace-description {
