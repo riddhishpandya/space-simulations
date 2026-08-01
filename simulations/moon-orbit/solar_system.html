@@ -162,11 +162,8 @@ function init(){
   // with the Moon's ~5.1 deg orbital inclination applied.
   var awayFromSun = earthPos.clone().normalize();
   var incl = 5.1*Math.PI/180;
-  var moonDir = new THREE.Vector3(
-    awayFromSun.x*Math.cos(incl),
-    Math.sin(incl),
-    awayFromSun.z*Math.cos(incl)
-  ).normalize();
+  var moonDir = new THREE.Vector3(awayFromSun.x, 0, awayFromSun.z)
+    .applyAxisAngle(new THREE.Vector3(1, 0, 0), incl);
   var moonPos = earthPos.clone().add(moonDir.clone().multiplyScalar(MOON_R));
 
   // ---------- Sun ----------
@@ -400,7 +397,8 @@ function init(){
   }
   function moonDirection(angle, incl){
     var fx = Math.cos(angle), fz = Math.sin(angle);
-    return new THREE.Vector3(fx*Math.cos(incl), Math.sin(incl), fz*Math.cos(incl));
+    return new THREE.Vector3(fx, 0, fz)
+      .applyAxisAngle(new THREE.Vector3(1, 0, 0), incl);
   }
   function setLive(on){
     liveMode = on;
