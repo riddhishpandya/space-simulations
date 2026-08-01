@@ -111,7 +111,7 @@ h1 {
   font-size: 0.95rem;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1024px), (pointer: coarse) {
   .workspace {
     padding: calc(6px + env(safe-area-inset-top))
       calc(14px + env(safe-area-inset-right)) 0

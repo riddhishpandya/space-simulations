@@ -41,7 +41,7 @@
   outline-offset: -2px;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1024px), (pointer: coarse) {
   .simulation-tab {
     min-height: 36px;
     padding: 0 12px;
