@@ -162,9 +162,7 @@ function init(){
   // with the Moon's ~5.1 deg orbital inclination applied.
   var awayFromSun = earthPos.clone().normalize();
   var incl = 5.1*Math.PI/180;
-  var moonDir = new THREE.Vector3(awayFromSun.x, 0, awayFromSun.z)
-    .applyAxisAngle(new THREE.Vector3(1, 0, 0), incl);
-  var moonPos = earthPos.clone().add(moonDir.clone().multiplyScalar(MOON_R));
+  var moonDir = new THREE.Vector3(awayFromSun.x, 0, awayFromSun.z);
 
   // ---------- Sun ----------
   var sunGeo = new THREE.SphereGeometry(SUN_RADIUS, 48, 48);
@@ -213,9 +211,13 @@ function init(){
 
   // Actual Moon orbit, tilted 5.1 deg relative to the ecliptic reference above
   var moonRing = ringPath(MOON_R, 64, 0x56B4E9, 0.65);
-  moonRing.position.copy(earthPos);
-  moonRing.rotation.x = incl;
-  scene.add(moonRing);
+  var moonOrbit = new THREE.Group();
+  moonOrbit.position.copy(earthPos);
+  moonOrbit.rotation.x = incl;
+  moonRing.material.depthTest = false;
+  moonRing.renderOrder = 10;
+  moonOrbit.add(moonRing);
+  scene.add(moonOrbit);
 
   // ---------- Earth ----------
   var earthGroup = new THREE.Group();
@@ -313,8 +315,8 @@ function init(){
     undefined,
     function(){ /* texture failed to load — flat gray fallback stays */ }
   );
-  moon.position.copy(moonPos);
-  scene.add(moon);
+  moon.position.copy(moonDir.clone().multiplyScalar(MOON_R));
+  moonOrbit.add(moon);
 
   // ---------- Sun-facing indicator line (Earth-Sun axis) ----------
   var axisGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), earthPos]);
@@ -395,10 +397,9 @@ function init(){
     var d = ((deg + 180) % 360 + 360) % 360 - 180;
     return d;
   }
-  function moonDirection(angle, incl){
+  function moonDirection(angle){
     var fx = Math.cos(angle), fz = Math.sin(angle);
-    return new THREE.Vector3(fx, 0, fz)
-      .applyAxisAngle(new THREE.Vector3(1, 0, 0), incl);
+    return new THREE.Vector3(fx, 0, fz);
   }
   function setLive(on){
     liveMode = on;
@@ -426,14 +427,13 @@ function init(){
     var earthAngleNowRad = earthAngleNow*Math.PI/180;
     var earthPosNow = new THREE.Vector3(ORBIT_R*Math.cos(earthAngleNowRad), 0, ORBIT_R*Math.sin(earthAngleNowRad));
     earthGroup.position.copy(earthPosNow);
-    moonRing.position.copy(earthPosNow);
+    moonOrbit.position.copy(earthPosNow);
     eclipticRef.position.copy(earthPosNow);
     camTarget.copy(earthPosNow);
 
     // --- Moon's position (sidereal orbit around Earth, starting from full-moon opposition) ---
     var moonAngleAbsRad = (earthAngleDeg0 + MOON_RATE_DEG_DAY*offsetDays)*Math.PI/180;
-    var moonPosNow = earthPosNow.clone().add(moonDirection(moonAngleAbsRad, incl).multiplyScalar(MOON_R));
-    moon.position.copy(moonPosNow);
+    moon.position.copy(moonDirection(moonAngleAbsRad, incl).multiplyScalar(MOON_R));
 
     // --- Sun-Earth dashed line ---
     var pts = [new THREE.Vector3(0,0,0), earthPosNow];
