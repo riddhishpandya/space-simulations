@@ -495,8 +495,8 @@ while (textNode = textWalker.nextNode()) {
   textNode.nodeValue = textNode.nodeValue.replace(/Toms River, NJ/g, 'New York City, NY');
 }
 
-function updateMoonPhaseBox(){
-  var phase = moonPhaseForDate(new Date());
+function updateMoonPhaseBox(date){
+  var phase = moonPhaseForDate(date);
   moonPhaseVisual.innerHTML = moonPhaseSvg(phase.age);
   moonPhaseBox.innerHTML = '';
   moonPhaseBox.appendChild(moonPhaseVisual);
@@ -520,7 +520,7 @@ var moonPhaseVisual = document.createElement('div');
 moonPhaseVisual.style.cssText = 'position:relative;flex:0 0 48px;width:48px;height:48px;margin-right:10px;border-radius:50%;overflow:hidden;box-shadow:0 0 14px rgba(203,213,225,.3);';
 moonPhaseBox.style.display = 'flex';
 moonPhaseBox.style.alignItems = 'center';
-updateMoonPhaseBox();
+updateMoonPhaseBox(new Date());
   function setLive(on){
     liveMode = on;
     liveBtn.classList.toggle('paused', !on);
@@ -575,6 +575,7 @@ updateMoonPhaseBox();
     dateEl.textContent = simulated.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
     utcEl.textContent = formatUTC(simulated);
     localEl.textContent = (liveMode ? 'Local ' : 'Sim ') + simulated.toLocaleTimeString();
+    updateMoonPhaseBox(simulated);
 
     // --- Text: Earth-Sun distance (true elliptical orbit) ---
     var rKm = AU_A_KM*(1-AU_E*AU_E)/(1+AU_E*Math.cos(earthAngleNowRad));
