@@ -111,6 +111,27 @@ h1 {
   font-size: 0.95rem;
 }
 
+html.mobile-layout .workspace {
+  padding-top: calc(6px + env(safe-area-inset-top));
+}
+
+html.mobile-layout .workspace-header {
+  padding-bottom: 4px;
+}
+
+html.mobile-layout .eyebrow {
+  margin-bottom: 2px;
+  font-size: 0.58rem;
+}
+
+html.mobile-layout h1 {
+  font-size: 1.35rem;
+}
+
+html.mobile-layout .workspace-description {
+  display: none;
+}
+
 @media (max-width: 1024px), (pointer: coarse) {
   .workspace {
     padding: calc(6px + env(safe-area-inset-top))

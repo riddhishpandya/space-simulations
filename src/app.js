@@ -1,5 +1,10 @@
 import { SIMULATIONS } from './simulations.js';
 
+const mobileDevice = window.matchMedia('(max-width: 1024px), (pointer: coarse), (hover: none)').matches
+  || navigator.maxTouchPoints > 0
+  || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+document.documentElement.classList.toggle('mobile-layout', mobileDevice);
+
 function createTab(simulation) {
   const tab = document.createElement('button');
   tab.className = 'simulation-tab';
