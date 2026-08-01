@@ -176,6 +176,13 @@ var moonTrueScale = false;
   var sunMat = new THREE.MeshBasicMaterial({color:0xE69F00});
   var sun = new THREE.Mesh(sunGeo, sunMat);
   scene.add(sun);
+  var sunTextureLoader = new THREE.TextureLoader();
+  sunTextureLoader.load('../../assets/solarsystemscope-sun-2k.jpg', function(texture){
+    texture.anisotropy = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
+    sunMat.map = texture;
+    sunMat.color.set(0xffffff);
+    sunMat.needsUpdate = true;
+  }, undefined, function(){ /* orange material remains as a local fallback */ });
 
   var glowGeo = new THREE.SphereGeometry(SUN_RADIUS*1.35, 32, 32);
   var glowMat = new THREE.MeshBasicMaterial({color:0xE69F00, transparent:true, opacity:0.18});

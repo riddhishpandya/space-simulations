@@ -18,6 +18,8 @@ assert.match(source, /var SUN_RADIUS_TRUE\s+=/);
 assert.match(source, /cameraMaxRadius/);
 assert.match(source, /PerspectiveCamera\(45, W\/H, 0\.1, 50000\)/);
 assert.match(source, /spherical\.radius = 30000;/);
+assert.match(source, /solarsystemscope-sun-2k\.jpg/);
+assert.match(source, /sunMat\.map = texture/);
 assert.match(source, /function setMoonScale\(trueScale\)/);
 assert.match(source, /scaleBtn/);
 assert.match(source, /New York City, NY/);
