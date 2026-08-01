@@ -10,6 +10,6 @@ assert.match(source, /var moonOrbit = new THREE\.Group\(\);/);
 assert.match(source, /moonOrbit\.add\(moonRing\);/);
 assert.match(source, /moonOrbit\.add\(moon\);/);
 assert.match(source, /moonOrbit\.position\.copy\(earthPosNow\);/);
-assert.match(source, /moonRing\.material\.depthTest = false;/);
+assert.match(source, /moonRing\.material\.depthTest = true;/);
 
 console.log('Moon orbit geometry contract passed');

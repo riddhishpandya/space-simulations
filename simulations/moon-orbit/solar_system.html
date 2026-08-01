@@ -214,7 +214,7 @@ function init(){
   var moonOrbit = new THREE.Group();
   moonOrbit.position.copy(earthPos);
   moonOrbit.rotation.x = incl;
-  moonRing.material.depthTest = false;
+  moonRing.material.depthTest = true;
   moonRing.renderOrder = 10;
   moonOrbit.add(moonRing);
   scene.add(moonOrbit);
