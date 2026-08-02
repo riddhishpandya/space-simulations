@@ -279,6 +279,9 @@ var moonTrueScale = false;
   var glowGeo = new THREE.SphereGeometry(SUN_RADIUS*1.35, 32, 32);
   var glowMat = new THREE.MeshBasicMaterial({color:0xE69F00, transparent:true, opacity:0.18});
   var glow = new THREE.Mesh(glowGeo, glowMat);
+  // Keep the physical Sun edge clean in both modes. The translucent shell reads
+  // as an oversized halo at true scale, so it is intentionally disabled.
+  glow.visible = false;
   scene.add(glow);
 
   var sunLight = new THREE.PointLight(0xfff2d0, 2.4, 0, 0);
@@ -544,7 +547,7 @@ function setMoonScale(trueScale){
   var sunScale = SUN_RADIUS / SUN_RADIUS_READABLE;
   sun.scale.setScalar(sunScale);
   glow.scale.setScalar(sunScale);
-  glow.visible = !trueScale;
+  glow.visible = false;
   earthPos.set(ORBIT_R * Math.cos(earthAngle), 0, ORBIT_R * Math.sin(earthAngle));
   if (typeof earthOrbitLine !== 'undefined' && earthOrbitLine) setRingRadius(earthOrbitLine, ORBIT_R, 128);
   if (typeof earthGroup !== 'undefined' && earthGroup) earthGroup.position.copy(earthPos);
