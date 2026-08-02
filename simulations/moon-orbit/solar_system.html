@@ -29,11 +29,100 @@
   #timeSlider{flex:1 1 auto;height:4px;accent-color:#56B4E9;}
   #offsetLabel{flex:0 0 auto;font-size:11px;color:#aab2c5;min-width:64px;text-align:right;}
   #loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#78809a;font-size:13px;}
+  #mobileHud{display:contents;}
+  @media (max-width:1024px), (pointer:coarse), (hover:none){
+    html.mobile-layout #mobileHud{
+      position:fixed;
+      inset:calc(8px + env(safe-area-inset-top)) 8px auto;
+      z-index:20;
+      display:grid;
+      grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+      gap:8px;
+      align-items:start;
+      pointer-events:none;
+    }
+    html.mobile-layout #mobileHud > *{pointer-events:auto;}
+    html.mobile-layout #mobileHud #clock,
+    html.mobile-layout #mobileHud #scaleBtn{
+      position:static!important;
+      width:auto!important;
+      min-width:0;
+      box-sizing:border-box;
+      margin:0;
+    }
+    html.mobile-layout #mobileHud #clock{order:1;}
+    html.mobile-layout #mobileHud #scaleBtn{order:2;}
+    html.mobile-layout #mobileHud #info{order:3;}
+    html.mobile-layout #mobileHud #moonPhaseBox{order:4;}
+    html.mobile-layout #mobileHud #clock{
+      padding:9px 10px!important;
+      font-size:10px!important;
+      text-align:left;
+      line-height:1.35;
+    }
+    html.mobile-layout #mobileHud #clock b{font-size:11px!important;}
+    html.mobile-layout #mobileHud #scaleBtn{
+      padding:9px 10px!important;
+      font-size:10px!important;
+      text-align:center;
+      white-space:nowrap;
+    }
+    html.mobile-layout #mobileHud #info,
+    html.mobile-layout #mobileHud #moonPhaseBox{
+      position:static!important;
+      grid-column:1 / -1;
+      width:auto!important;
+      max-width:none!important;
+      box-sizing:border-box;
+      margin:0;
+    }
+    html.mobile-layout #mobileHud #info{
+      padding:10px 11px!important;
+      font-size:10px!important;
+      line-height:1.35!important;
+    }
+    html.mobile-layout #mobileHud #info h1{font-size:12px!important;margin-bottom:4px!important;}
+    html.mobile-layout #mobileHud #info .row{gap:6px!important;margin:2px 0!important;}
+    html.mobile-layout #mobileHud #info .row:nth-of-type(2),
+    html.mobile-layout #mobileHud #info .row:nth-of-type(3),
+    html.mobile-layout #mobileHud #info .row:nth-of-type(6),
+    html.mobile-layout #mobileHud #info .row:nth-of-type(7){display:none!important;}
+    html.mobile-layout #mobileHud #moonPhaseBox{
+      padding:9px 10px!important;
+      font-size:10px!important;
+    }
+    html.mobile-layout #mobileHud #moonPhaseBox svg{width:42px!important;height:42px!important;}
+    html.mobile-layout #mobileHud #moonPhaseVisual{width:42px!important;height:42px!important;flex-basis:42px!important;}
+    html.mobile-layout #legend,
+    html.mobile-layout #controls{display:none!important;}
+    html.mobile-layout #timepanel{
+      left:8px!important;
+      right:8px!important;
+      bottom:calc(8px + env(safe-area-inset-bottom))!important;
+      transform:none!important;
+      width:auto!important;
+      min-width:0!important;
+      max-width:none!important;
+      box-sizing:border-box!important;
+      overflow:hidden!important;
+      z-index:30!important;
+      padding:9px 10px!important;
+      gap:7px!important;
+    }
+    html.mobile-layout #timeSlider{min-width:0!important;width:100%!important;}
+    html.mobile-layout #offsetLabel{min-width:36px!important;font-size:10px!important;}
+    html.mobile-layout #liveBtn{padding-left:8px!important;padding-right:8px!important;font-size:10px!important;}
+  }
+  @media (max-width:380px){
+    html.mobile-layout #mobileHud{grid-template-columns:1fr;}
+    html.mobile-layout #mobileHud #scaleBtn{text-align:left;}
+  }
 </style>
 </head>
 <body>
 <div id="canvas-wrap"><div id="loading">Loading scene…</div></div>
 
+<div id="mobileHud">
 <div class="panel" id="info">
   <h1>Sun · Earth · Moon</h1>
   <div class="row"><span>Date</span><b id="i-date">—</b></div>
@@ -49,6 +138,7 @@
 <div class="panel" id="clock">
   <div id="c-utc">UTC —</div>
   <b id="c-local">Local —</b>
+</div>
 </div>
 
 <div class="panel" id="legend">
@@ -353,21 +443,12 @@ scaleBtn.title = 'Toggle between readable and physically relative Earth–Moon s
 scaleBtn.setAttribute('aria-pressed', 'false');
 scaleBtn.style.cssText = 'position:fixed;top:auto;right:12px;bottom:104px;z-index:20;padding:8px 10px;border:1px solid #334155;border-radius:8px;background:rgba(11,18,32,.94);color:#dbeafe;font:600 11px system-ui;cursor:pointer;';
 scaleBtn.addEventListener('click', function(){ setMoonScale(!moonTrueScale); });
-document.body.appendChild(scaleBtn);
+document.getElementById('mobileHud').appendChild(scaleBtn);
 var mobileDevice = window.matchMedia('(max-width: 1024px), (pointer: coarse), (hover: none)').matches
   || navigator.maxTouchPoints > 0
   || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 if (mobileDevice) {
   document.body.classList.add('mobile-layout');
-  var mobileOverrideStyle = document.createElement('style');
-  mobileOverrideStyle.textContent = 'body.mobile-layout #info{top:8px!important;left:8px!important;right:156px!important;max-width:none!important;padding:9px 10px!important;font-size:10px!important;line-height:1.35!important}body.mobile-layout #info h1{font-size:12px!important;margin-bottom:4px!important}body.mobile-layout #info .row{gap:6px!important;margin:2px 0!important}body.mobile-layout #info .row:nth-of-type(2),body.mobile-layout #info .row:nth-of-type(3),body.mobile-layout #info .row:nth-of-type(6),body.mobile-layout #info .row:nth-of-type(7){display:none!important}body.mobile-layout #clock{top:8px!important;right:8px!important;width:140px!important;padding:8px 9px!important;font-size:10px!important}body.mobile-layout #clock b{font-size:11px!important}body.mobile-layout #moonPhaseBox{top:142px!important;left:8px!important;right:8px!important;width:auto!important;padding:7px 9px!important;font-size:10px!important}body.mobile-layout #legend,body.mobile-layout #controls{display:none!important}body.mobile-layout #timepanel{bottom:8px!important;left:8px!important;transform:none!important;width:calc(100% - 16px)!important;min-width:0!important;max-width:none!important;padding:9px 10px!important;gap:7px!important}body.mobile-layout #scaleBtn{top:245px!important;right:8px!important;bottom:auto!important;font-size:10px!important;padding:7px 8px!important}';
-  document.head.appendChild(mobileOverrideStyle);
-  var mobileSizingStyle = document.createElement('style');
-  mobileSizingStyle.textContent = 'body.mobile-layout #info{top:142px!important;left:8px!important;right:8px!important;padding:7px 8px!important;font-size:9.5px!important;line-height:1.25!important}body.mobile-layout #info h1{font-size:11px!important;margin-bottom:3px!important}body.mobile-layout #info .row{gap:5px!important;margin:1px 0!important}body.mobile-layout #clock{top:8px!important;right:8px!important}body.mobile-layout #scaleBtn{top:68px!important;bottom:auto!important}body.mobile-layout #moonPhaseBox{top:285px!important;left:8px!important;right:8px!important;width:auto!important}body.mobile-layout #timepanel{box-sizing:border-box!important;overflow:hidden!important;z-index:30!important}body.mobile-layout #timeSlider{min-width:0!important;width:100%!important}body.mobile-layout #offsetLabel{min-width:36px!important;font-size:10px!important}body.mobile-layout #liveBtn{padding-left:8px!important;padding-right:8px!important;font-size:10px!important}';
-  if (window.innerWidth > 600) {
-    mobileSizingStyle.textContent += '@media (min-width: 601px) { body.mobile-layout #info{right:40%!important} body.mobile-layout #moonPhaseBox{top:142px!important;left:62%!important;right:8px!important;width:auto!important;padding:7px!important;font-size:10px!important} body.mobile-layout #moonPhaseVisual{flex-basis:34px!important;width:34px!important;height:34px!important;margin-right:6px!important} body.mobile-layout #moonPhaseBox svg{width:34px!important;height:34px!important} }';
-  }
-  document.head.appendChild(mobileSizingStyle);
 }
   function updateCamera(){
     var offset = new THREE.Vector3().setFromSpherical(spherical);
@@ -506,10 +587,7 @@ var moonPhaseBox = document.createElement('aside');
 moonPhaseBox.id = 'moonPhaseBox';
 moonPhaseBox.setAttribute('aria-live', 'polite');
 moonPhaseBox.style.cssText = 'position:fixed;left:auto;right:12px;top:164px;bottom:auto;z-index:20;width:196px;padding:10px 12px;border:1px solid #263247;border-radius:10px;background:rgba(7,12,22,.92);color:#dbeafe;font:12px system-ui;box-shadow:0 8px 24px rgba(0,0,0,.25);';
-document.body.appendChild(moonPhaseBox);
-var responsiveUiStyle = document.createElement('style');
-responsiveUiStyle.textContent = '@media (max-width: 1024px), (pointer: coarse) { #info { top: 8px !important; left: 8px !important; right: 156px !important; max-width: none !important; padding: 9px 10px !important; font-size: 10px !important; line-height: 1.35 !important; } #info h1 { font-size: 12px !important; margin-bottom: 4px !important; } #info .row { gap: 6px !important; margin: 2px 0 !important; } #info .row:nth-of-type(2), #info .row:nth-of-type(3), #info .row:nth-of-type(6), #info .row:nth-of-type(7) { display: none !important; } #clock { top: 8px !important; right: 8px !important; width: 140px !important; padding: 8px 9px !important; font-size: 10px !important; } #clock b { font-size: 11px !important; } #moonPhaseBox { left: 8px !important; right: 8px !important; top: 142px !important; width: auto !important; padding: 7px 9px !important; font-size: 10px !important; } #moonPhaseBox svg { width: 38px !important; height: 38px !important; } #moonPhaseVisual { flex-basis: 38px !important; width: 38px !important; height: 38px !important; } #legend, #controls { display: none !important; } #timepanel { bottom: 8px !important; left: 8px !important; transform: none !important; width: calc(100% - 16px) !important; min-width: 0 !important; max-width: none !important; padding: 9px 10px !important; gap: 7px !important; } #scaleBtn { top: 68px !important; right: 8px !important; bottom: auto !important; font-size: 10px !important; padding: 7px 8px !important; } }';
-document.head.appendChild(responsiveUiStyle);
+document.getElementById('mobileHud').appendChild(moonPhaseBox);
 
 var textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
 var textNode;
