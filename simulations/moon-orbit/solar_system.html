@@ -218,11 +218,13 @@ function init(){
     });
     return new THREE.Points(geo,mat);
   }
+  var starLayers = [];
   (function(){
     // Fixed pixel size (sizeAttenuation:false) keeps stars pin-sharp regardless of
     // camera distance/zoom — a photo texture would soften as you zoom in, points don't.
-    scene.add(makeStarLayer(2600, 900, 1400, 1.5));   // faint distant field
-    scene.add(makeStarLayer(220,  900, 1400, 2.6));   // brighter standouts
+    starLayers.push(makeStarLayer(2600, 900, 1400, 1.5));   // faint distant field
+    starLayers.push(makeStarLayer(220,  900, 1400, 2.6));   // brighter standouts
+    starLayers.forEach(function(layer){ scene.add(layer); });
   })();
 
 
@@ -548,6 +550,7 @@ function setMoonScale(trueScale){
   sun.scale.setScalar(sunScale);
   glow.scale.setScalar(sunScale);
   glow.visible = false;
+  starLayers.forEach(function(layer){ layer.visible = !trueScale; });
   earthPos.set(ORBIT_R * Math.cos(earthAngle), 0, ORBIT_R * Math.sin(earthAngle));
   if (typeof earthOrbitLine !== 'undefined' && earthOrbitLine) setRingRadius(earthOrbitLine, ORBIT_R, 128);
   if (typeof earthGroup !== 'undefined' && earthGroup) earthGroup.position.copy(earthPos);

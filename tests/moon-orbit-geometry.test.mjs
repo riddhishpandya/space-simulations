@@ -23,6 +23,8 @@ assert.match(source, /sunMat\.map = texture/);
 assert.match(source, /function setMoonScale\(trueScale\)/);
 assert.match(source, /glow\.visible = false;/);
 assert.doesNotMatch(source, /glow\.visible = !trueScale;/);
+assert.match(source, /var starLayers = \[\];/);
+assert.match(source, /starLayers\.forEach\(function\(layer\)\{ layer\.visible = !trueScale; \}\);/);
 assert.match(source, /SUN_RADIUS_TRUE = EARTH_RADIUS \* \(695700 \/ 6371\)/);
 assert.match(source, /scaleBtn/);
 assert.match(source, /New York City, NY/);
