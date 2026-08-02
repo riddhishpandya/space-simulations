@@ -36,8 +36,9 @@
       inset:calc(8px + env(safe-area-inset-top)) 8px auto;
       z-index:20;
       display:grid;
-      grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
-      gap:8px;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:6px;
+      row-gap:6px;
       align-items:start;
       pointer-events:none;
     }
@@ -66,6 +67,7 @@
       font-size:10px!important;
       text-align:center;
       white-space:nowrap;
+      justify-self:end;
     }
     html.mobile-layout #mobileHud #info,
     html.mobile-layout #mobileHud #moonPhaseBox{
@@ -137,8 +139,7 @@
 </div>
 
 <div class="panel" id="clock">
-  <div id="c-utc">UTC —</div>
-  <b id="c-local">Local —</b>
+  <div id="c-eastern">Eastern Time —</div>
 </div>
 </div>
 
@@ -501,8 +502,7 @@ if (mobileDevice) {
 
   // ---------- Clock + time simulator ----------
   var dateEl = document.getElementById('i-date');
-  var utcEl = document.getElementById('c-utc');
-  var localEl = document.getElementById('c-local');
+  var easternEl = document.getElementById('c-eastern');
   var sunDistEl = document.getElementById('i-sundist');
   var orbitEl = document.getElementById('i-orbit');
   var phaseEl = document.getElementById('i-phase');
@@ -514,8 +514,18 @@ if (mobileDevice) {
   var liveMode = true;
   var offsetHours = 0; // used only when paused (slider-controlled)
 
-  function formatUTC(d){
-    return d.toISOString().slice(0,16).replace('T',' ')+' UTC';
+  function formatEasternDate(d){
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone:'America/New_York', month:'short', day:'numeric', year:'numeric'
+    }).format(d);
+  }
+  function formatEasternTime(d){
+    var date = formatEasternDate(d);
+    var time = new Intl.DateTimeFormat('en-US', {
+      timeZone:'America/New_York', hour:'numeric', minute:'2-digit', second:'2-digit',
+      hour12:true, timeZoneName:'short'
+    }).format(d);
+    return date + ' · ' + time;
   }
   function normalizePM180(deg){
     var d = ((deg + 180) % 360 + 360) % 360 - 180;
@@ -676,9 +686,8 @@ updateMoonPhaseBox(new Date());
     updateCamera();
 
     // --- Text: date/clock ---
-    dateEl.textContent = simulated.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
-    utcEl.textContent = formatUTC(simulated);
-    localEl.textContent = (liveMode ? 'Local ' : 'Sim ') + simulated.toLocaleTimeString();
+    dateEl.textContent = formatEasternDate(simulated);
+    easternEl.textContent = formatEasternTime(simulated);
     updateMoonPhaseBox(simulated);
 
     // --- Text: Earth-Sun distance (true elliptical orbit) ---
