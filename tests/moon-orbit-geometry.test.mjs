@@ -27,6 +27,7 @@ assert.match(source, /scaleBtn/);
 assert.match(source, /New York City, NY/);
 assert.match(source, /Moon phase/);
 assert.match(source, /function moonPhaseSvg\(age\)/);
+assert.match(source, /var innerSweep = cosine >= 0 \? \(waxing \? 0 : 1\) : \(waxing \? 1 : 0\);/);
 assert.match(source, /role="img" aria-label="Moon phase visual"/);
 assert.match(source, /function updateMoonPhaseBox\(date\)/);
 assert.match(source, /updateMoonPhaseBox\(simulated\);/);

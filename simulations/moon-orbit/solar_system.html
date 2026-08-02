@@ -614,7 +614,7 @@ function moonPhaseSvg(age){
   var progress = waxing ? age / cycle : 1 - age / cycle;
   var cosine = Math.cos(progress * Math.PI * 2);
   var ellipseRadius = Math.max(0.01, Math.abs(cosine) * radius).toFixed(2);
-  var innerSweep = cosine >= 0 ? (waxing ? 1 : 0) : (waxing ? 0 : 1);
+  var innerSweep = cosine >= 0 ? (waxing ? 0 : 1) : (waxing ? 1 : 0);
   var outerSweep = waxing ? 1 : 0;
   var path = 'M 32 4 A 28 28 0 0 ' + outerSweep + ' 32 60 A ' + ellipseRadius + ' 28 0 0 ' + innerSweep + ' 32 4 Z';
   return '<svg viewBox="0 0 64 64" width="48" height="48" role="img" aria-label="Moon phase visual"><defs><radialGradient id="phaseMoonLight" cx="38%" cy="32%"><stop offset="0" stop-color="#f8fafc"/><stop offset="0.55" stop-color="#cbd5e1"/><stop offset="1" stop-color="#64748b"/></radialGradient></defs><circle cx="32" cy="32" r="28" fill="#070c16"/><path d="' + path + '" fill="url(#phaseMoonLight)"/><circle cx="32" cy="32" r="28" fill="none" stroke="#94a3b8" stroke-opacity=".35"/></svg>';
