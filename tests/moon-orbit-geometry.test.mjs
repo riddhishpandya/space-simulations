@@ -29,6 +29,7 @@ assert.match(source, /role="img" aria-label="Moon phase visual"/);
 assert.match(source, /function updateMoonPhaseBox\(date\)/);
 assert.match(source, /updateMoonPhaseBox\(simulated\);/);
 assert.match(source, /new THREE\.Spherical\(22,/);
+assert.match(source, /document\.documentElement\.classList\.add\('mobile-layout'\)/);
 assert.match(source, /id="mobileHud"/);
 assert.doesNotMatch(source, /mobileOverrideStyle|mobileSizingStyle|responsiveUiStyle/);
 assert.match(source, /display:\s*grid/);
