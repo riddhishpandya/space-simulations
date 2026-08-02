@@ -21,6 +21,8 @@ assert.match(source, /spherical\.radius = 30000;/);
 assert.match(source, /solarsystemscope-sun-2k\.jpg/);
 assert.match(source, /sunMat\.map = texture/);
 assert.match(source, /function setMoonScale\(trueScale\)/);
+assert.match(source, /glow\.visible = !trueScale;/);
+assert.match(source, /SUN_RADIUS_TRUE = EARTH_RADIUS \* \(695700 \/ 6371\)/);
 assert.match(source, /scaleBtn/);
 assert.match(source, /New York City, NY/);
 assert.match(source, /Moon phase/);

@@ -534,6 +534,7 @@ function setMoonScale(trueScale){
   var sunScale = SUN_RADIUS / SUN_RADIUS_READABLE;
   sun.scale.setScalar(sunScale);
   glow.scale.setScalar(sunScale);
+  glow.visible = !trueScale;
   earthPos.set(ORBIT_R * Math.cos(earthAngle), 0, ORBIT_R * Math.sin(earthAngle));
   if (typeof earthOrbitLine !== 'undefined' && earthOrbitLine) setRingRadius(earthOrbitLine, ORBIT_R, 128);
   if (typeof earthGroup !== 'undefined' && earthGroup) earthGroup.position.copy(earthPos);
